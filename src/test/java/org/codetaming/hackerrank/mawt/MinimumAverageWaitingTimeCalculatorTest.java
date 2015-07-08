@@ -1,6 +1,15 @@
 package org.codetaming.hackerrank.mawt;
 
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 
 public class MinimumAverageWaitingTimeCalculatorTest {
 
@@ -13,8 +22,20 @@ public class MinimumAverageWaitingTimeCalculatorTest {
     1 ≤ N ≤ 105 0 ≤ Ti ≤ 109 1 ≤ Li ≤ 109
      */
 
-    @Test
-    public void test() throws Exception {
-        MinimumAverageWaitingTimeCalculator mawtc = new MinimumAverageWaitingTimeCalculator();
+    private MinimumAverageWaitingTimeCalculator mawtc;
+
+    @Before
+    public void setUp() throws Exception {
+        mawtc = new MinimumAverageWaitingTimeCalculator();
     }
+
+    @Test
+    public void testCalculateAcceptsCorrectSignature() throws Exception {
+        int numCustomers = 3;
+        List<Integer> arrivalTimes = Arrays.asList(0, 1, 2);
+        List<Integer> preparationTimes = Arrays.asList(3, 6, 9);
+        Integer averageWaitTime = 0;
+        assertTrue(mawtc.calculate(numCustomers, arrivalTimes, preparationTimes) > -1);
+    }
+
 }
