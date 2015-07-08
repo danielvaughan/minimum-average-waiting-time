@@ -38,4 +38,21 @@ public class MinimumAverageWaitingTimeCalculatorTest {
         assertTrue(mawtc.calculate(numCustomers, arrivalTimes, preparationTimes) > -1);
     }
 
+    @Test
+    public void testCalculateWithSampleInput00() throws Exception {
+        int numCustomers = 3;
+        List<Integer> arrivalTimes = Arrays.asList(0, 1, 2);
+        List<Integer> preparationTimes = Arrays.asList(3, 6, 9);
+        Integer averageWaitTime = 9;
+        assertThat(mawtc.calculate(numCustomers, arrivalTimes, preparationTimes), is(9));
+    }
+
+    @Test
+    public void testCalculateWithSampleInput01() throws Exception {
+        int numCustomers = 3;
+        List<Integer> arrivalTimes = Arrays.asList(0, 1, 2);
+        List<Integer> preparationTimes = Arrays.asList(3, 9, 5);
+        Integer averageWaitTime = 9;
+        assertThat(mawtc.calculate(numCustomers, arrivalTimes, preparationTimes), is(8));
+    }
 }
