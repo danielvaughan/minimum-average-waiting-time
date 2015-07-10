@@ -60,7 +60,7 @@ public class MinimumAverageWaitingTimeCalculatorTest {
     }
 
     private void assertMinimumAverageWaitingTimeIsCorrect(int numCustomers, List<Integer> arrivalTimes, List<Integer> preparationTimes, Integer averageWaitTime) {
-        assertThat(mawtc.calculateAverageWaitingTimes(numCustomers, arrivalTimes, preparationTimes), is(averageWaitTime));
+        assertThat(mawtc.calculateOptimalAverageWaitTimes(numCustomers, arrivalTimes, preparationTimes), is(averageWaitTime));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class MinimumAverageWaitingTimeCalculatorTest {
         int numCustomers = 3;
         List<Integer> arrivalTimes = Arrays.asList(0, 1, 2);
         List<Integer> preparationTimes = Arrays.asList(3, 9, 5);
-        Integer averageWaitTime = 9;
+        Integer averageWaitTime = 8;
         assertMinimumAverageWaitingTimeIsCorrect(numCustomers, arrivalTimes, preparationTimes, averageWaitTime);
     }
 }
