@@ -1,8 +1,6 @@
 package org.codetaming.hackerrank.mawt.solution2;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import static java.util.Collections.sort;
 
@@ -14,7 +12,7 @@ public class Solution {
     }
 
     private void go() {
-        Processor processor = new ProcessorImpl(new JobLoaderSystemInImpl(), new SjfSchedulerImpl());
+        Processor processor = new ProcessorImpl(new JobLoaderSystemInImpl(), new SjfAndArrivalSchedulerPriorityQueueImpl());
         processor.process();
         System.out.print(processor.getAverageWaitTime());
     }
@@ -23,6 +21,25 @@ public class Solution {
 
         private final long arrivalTime;
         private final long processingTime;
+
+        public long getStartTime() {
+            return startTime;
+        }
+
+        public long getEndTime() {
+            return endTime;
+        }
+
+        public void setStartTime(long startTime) {
+            this.startTime = startTime;
+        }
+
+        public void setEndTime(long endTime) {
+            this.endTime = endTime;
+        }
+
+        private long startTime;
+        private long endTime;
         private long waitingTime;
 
         public Job(long arrivalTime, long processingTime) {
@@ -56,6 +73,8 @@ public class Solution {
             return "Job{" +
                     "arrivalTime=" + arrivalTime +
                     ", processingTime=" + processingTime +
+                    ", startTime=" + startTime +
+                    ", endTime=" + endTime +
                     ", waitingTime=" + waitingTime +
                     '}';
         }
@@ -121,15 +140,18 @@ public class Solution {
                     scheduler.addJob(job);
                     pendingJobs.remove(job);
                 }
-                Job nextJob = scheduler.getNextJob();
+                Job nextJob = scheduler.getNextJob(time);
                 if (nextJob == null) {
                     time++;
                 }
                 while (nextJob != null) {
+                    nextJob.setStartTime(time);
                     time = time + nextJob.getProcessingTime();
+                    nextJob.setEndTime(time);
                     nextJob.setWaitingTime(time - nextJob.getArrivalTime());
                     completedJobs.add(nextJob);
-                    nextJob = scheduler.getNextJob();
+                    pendingJobs.remove(nextJob);
+                    nextJob = scheduler.getNextJob(time);
                 }
             }
             return completedJobs;
@@ -150,7 +172,7 @@ public class Solution {
 
         void addJob(Job job);
 
-        Job getNextJob();
+        Job getNextJob(long time);
 
     }
 
@@ -164,7 +186,7 @@ public class Solution {
         }
 
         @Override
-        public Job getNextJob() {
+        public Job getNextJob(long time) {
             if (potentialJobs.isEmpty()) {
                 return null;
             }
@@ -178,6 +200,97 @@ public class Solution {
             return shortestJob;
         }
     }
+
+    class SjfSchedulerPriorityQueueImpl implements Scheduler {
+
+        private PriorityQueue<Job> jobPriorityQueue = new PriorityQueue<>(10000000, new ProcessingTimeCompartor());
+
+        @Override
+        public void addJob(Job job) {
+            jobPriorityQueue.add(job);
+        }
+
+        @Override
+        public Job getNextJob(long time) {
+            Job nextJob = jobPriorityQueue.poll();
+            return nextJob;
+        }
+
+        private class ProcessingTimeCompartor implements Comparator<Job> {
+            @Override
+            public int compare(Job o1, Job o2) {
+                if (o1.getProcessingTime() < o2.getProcessingTime()) {
+                    return -1;
+                }
+                if (o1.getProcessingTime() > o2.getProcessingTime()) {
+                    return 1;
+                }
+                return 0;
+            }
+        }
+    }
+
+    class SjfAndArrivalSchedulerPriorityQueueImpl implements Scheduler {
+
+        private PriorityQueue<Job> processingTimePriorityQueue = new PriorityQueue<>(10000000, new ProcessingTimeCompartor());
+        private PriorityQueue<Job> arrivalTimePriorityQueue = new PriorityQueue<>(10000000, new ArrivalTimeCompartor());
+
+        @Override
+        public void addJob(Job job) {
+            arrivalTimePriorityQueue.add(job);
+            processingTimePriorityQueue.add(job);
+        }
+
+        @Override
+        public Job getNextJob(long time) {
+            if (processingTimePriorityQueue.isEmpty())
+            {
+                return null;
+            }
+            else {
+                Job nextJobByArrival = arrivalTimePriorityQueue.peek();
+                Job nextJobByProcessing = processingTimePriorityQueue.peek();
+                long arrivalTotalTime = time - nextJobByArrival.getArrivalTime() + nextJobByArrival.getProcessingTime();
+                long processingTotalTime = time - nextJobByProcessing.getArrivalTime() + nextJobByProcessing.getProcessingTime();
+                Job nextJob;
+                if (processingTotalTime < arrivalTotalTime) {
+                    nextJob = processingTimePriorityQueue.poll();
+                    arrivalTimePriorityQueue.remove(nextJob);
+                } else {
+                    nextJob = arrivalTimePriorityQueue.poll();
+                    processingTimePriorityQueue.remove(nextJob);
+                }
+                return nextJob;
+            }
+        }
+
+        private class ProcessingTimeCompartor implements Comparator<Job> {
+            @Override
+            public int compare(Job o1, Job o2) {
+                if (o1.getProcessingTime() < o2.getProcessingTime()) {
+                    return -1;
+                }
+                if (o1.getProcessingTime() > o2.getProcessingTime()) {
+                    return 1;
+                }
+                return 0;
+            }
+        }
+
+        private class ArrivalTimeCompartor implements Comparator<Job> {
+            @Override
+            public int compare(Job o1, Job o2) {
+                if (o1.getArrivalTime() > o2.getArrivalTime()) {
+                    return -1;
+                }
+                if (o1.getArrivalTime() < o2.getArrivalTime()) {
+                    return 1;
+                }
+                return 0;
+            }
+        }
+    }
+
 
 }
 

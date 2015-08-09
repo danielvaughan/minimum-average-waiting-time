@@ -1,4 +1,4 @@
-package org.codetaming.hackerrank.mawt.solution2;
+package org.codetaming.hackerrank.mawt.solution3;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,13 +10,13 @@ import java.io.PrintStream;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class SolutionTest {
+public class Solution3Test {
 
-    private org.codetaming.hackerrank.mawt.solution2.Solution solution;
+    private org.codetaming.hackerrank.mawt.solution3.Solution solution;
 
     @Before
     public void setUp() throws Exception {
-        solution = new org.codetaming.hackerrank.mawt.solution2.Solution();
+        solution = new org.codetaming.hackerrank.mawt.solution3.Solution();
     }
 
     @Test
