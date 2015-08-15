@@ -1,6 +1,7 @@
 package org.codetaming.hackerrank.mawt.solution3;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -56,6 +57,26 @@ public class Solution3Test {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
         solution.main(new String[]{});
+        assertThat(out.toString(), is("5"));
+    }
+
+    @Test
+    public void given_times_with_big_arrival_time_difference() throws Exception {
+        String data = "3\n0 100\n100 101\n1 100";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+        solution.main(new String[]{});
+        assertThat(out.toString(), is("166"));
+    }
+
+    @Test
+    public void given_times_from_stackoverflow() throws Exception {
+        String data = "5\n8 3\n2 1\n1 3\n3 2\n4 4";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+        solution.main(new String[]{});
         assertThat(out.toString(), is("4"));
     }
 
@@ -81,6 +102,15 @@ public class Solution3Test {
         System.setOut(new PrintStream(out));
         solution.main(new String[]{});
         assertThat(out.toString(), is("8485548331"));
+    }
+
+    @Test
+    public void given_TestCase_02() throws Exception {
+        System.setIn(this.getClass().getClassLoader().getResourceAsStream("test-02.txt"));
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+        solution.main(new String[]{});
+        assertThat(out.toString(), is("6667863382"));
     }
 
     @Test
